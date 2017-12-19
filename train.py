@@ -1,43 +1,53 @@
 # coding=utf-8
+from __future__ import absolute_import, print_function
 import argparse
 import os
+import sys
 import torch.utils.data
-import torch.nn as nn
 from torch.backends import cudnn
 import torch.optim as optim
 from torch.autograd import Variable
 from models import inception_v3
-from losses import *
-from utils import RandomIdentitySampler
+import losses
+from utils import RandomIdentitySampler, mkdir_if_missing, logging
 import DataSet
+
 
 torch.cuda.set_device(7)
 cudnn.benchmark = True
 
 parser = argparse.ArgumentParser(description='PyTorch Training')
-parser.add_argument('--data', default='car', required=True,
+parser.add_argument('-data', default='car', required=True,
                     help='path to dataset')
-parser.add_argument('--nThreads', '-j', default=4, type=int, metavar='N',
-                    help='number of data loading threads (default: 2)')
-parser.add_argument('--save_path', default='checkpoints/Adam5',
+parser.add_argument('-loss', default='gaussian', required=True,
+                    help='path to dataset')
+parser.add_argument('-log_dir', default=None,
                     help='where the trained models save')
-
 
 parser.add_argument('--BatchSize', '-b', default=128, type=int, metavar='N',
                     help='mini-batch size (1 = pure stochastic) Default: 256')
 parser.add_argument('--num_instances', default=4, type=int, metavar='n',
                     help='')
-
 parser.add_argument('--epochs', '-epochs', default=100, type=int, metavar='N',
                     help='epochs for training process')
 # optimizer
 parser.add_argument('--lr', type=float, default=1e-4,
                     help="learning rate of new parameters, for pretrained "
                          "parameters it is 10 times smaller than this")
+parser.add_argument('--nThreads', '-j', default=4, type=int, metavar='N',
+                    help='number of data loading threads (default: 2)')
 parser.add_argument('--momentum', type=float, default=0.9)
 parser.add_argument('--weight-decay', type=float, default=5e-4)
 
 args = parser.parse_args()
+
+if args.log_dir is None:
+    log_dir = os.path.join('checkpoints', args.loss)
+else:
+    log_dir = os.path.join('checkpoints', args.log_dir)
+mkdir_if_missing(log_dir)
+# write log
+sys.stdout = logging.Logger(os.path.join(log_dir, 'log.txt'))
 
 model = inception_v3(dropout=None, classify=False)
 
@@ -54,13 +64,13 @@ pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
 model_dict.update(pretrained_dict)
 # 加载我们真正需要的state_dict
 model.load_state_dict(model_dict)
-# os.mkdir(args.save_path)
-torch.save(model, os.path.join(args.save_path ,'model.pkl'))
+# os.mkdir(log_dir)
+torch.save(model, os.path.join(log_dir, 'model.pkl'))
 model = model.cuda()
 # print(model.parameters())
 
 # criterion = CenterTripletLoss().cuda()
-criterion = GaussianMetricLoss().cuda()
+criterion = losses.create(args.loss).cuda()
 
 # fine tune the model: the learning rate for pretrained parameter is 1/10
 base_param_ids = set(map(id, model.Embed.parameters()))
@@ -117,22 +127,22 @@ for epoch in range(args.epochs):
     print('[epoch %d]\t loss: %.7f \t diff: %.3f \t pos-nums: %d \tneg-num: %d'
           % (epoch + 1,  running_loss, inter_, dist_an, dist_ap))
     if epoch % 200 == 0:
-        torch.save(model, os.path.join(args.save_path ,'gaussian%d_model.pkl' % epoch))
+        torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
+
+    if epoch == 1000:
+        learn_rate /= 5
+        optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
+                                     weight_decay=args.weight_decay)
 
     if epoch == 1600:
-        learn_rate = learn_rate/5
+        learn_rate /= 5
+        optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
+                                     weight_decay=args.weight_decay)
+    if epoch == 2000:
+        learn_rate /= 5
         optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
                                      weight_decay=args.weight_decay)
 
-    if epoch == 2400:
-        learn_rate = learn_rate/5
-        optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
-                                     weight_decay=args.weight_decay)
-    if epoch == 3000:
-        learn_rate = learn_rate/5
-        optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
-                                     weight_decay=args.weight_decay)
-
-torch.save(model, os.path.join(args.save_path ,'gaussian%d_model.pkl' % epoch))
+torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
 print('Finished Training')

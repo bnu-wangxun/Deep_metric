@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from .meters import *
 from .sampler import RandomIdentitySampler
 import torch
-
+from .osutils import mkdir_if_missing
 
 def to_numpy(tensor):
     if torch.is_tensor(tensor):

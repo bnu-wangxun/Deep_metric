@@ -1,2 +1,2 @@
-import DataSet 
-DataSet.create()
+import losses
+losses.create('triplet')
