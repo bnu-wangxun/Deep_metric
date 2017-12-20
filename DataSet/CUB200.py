@@ -25,7 +25,7 @@ class CUB200:
                 ])]
 
         if root is None:
-            root = './CUB_200_2011'
+            root = 'DataSet/CUB_200_2011'
 
         traindir = os.path.join(root, 'train')
         testdir = os.path.join(root, 'test')
