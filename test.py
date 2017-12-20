@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(description='PyTorch Testing')
 parser.add_argument('-data', type=str, default='car')
 parser.add_argument('-r', type=str, default='model.pkl', metavar='PATH')
 
-parser.add_argument('-test', type=bool, default=True, help='evaluation on test set or train set')
+parser.add_argument('-test', type=int, default=1, help='evaluation on test set or train set')
 
 args = parser.parse_args()
 # torch.cuda.set_device(8)
@@ -26,7 +26,7 @@ cudnn.benchmark = True
 model = torch.load(model_path)
 model = model.cuda()
 
-if args.test:
+if args.test==1:
     data = DataSet.create(args.data, train=False)
     data_loader = torch.utils.data.DataLoader(
         data.test, batch_size=64, shuffle=False, drop_last=False)

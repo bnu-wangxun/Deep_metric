@@ -10,7 +10,7 @@ def names():
     return sorted(__factory.keys())
 
 
-def create(name, root, *args, **kwargs):
+def create(name, root=None, *args, **kwargs):
     """
     Create a dataset instance.
 
