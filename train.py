@@ -118,11 +118,11 @@ for epoch in range(args.epochs):
         embed_feat = model(inputs)
 
         # loss = criterion(embed_feat, labels)
-        loss, inter_, dist_ap, dist_an = criterion(embed_feat, labels)  # 将output和labels使用叉熵计算损失
+        loss, inter_, dist_ap, dist_an = criterion(embed_feat, labels)
 
-        loss.backward()  # 反向传播
-        optimizer.step()  # 用SGD更新参数
-        running_loss += loss.data[0]  # loss本身为Variable类型，所以要使用data获取其Tensor，因为其为标量，所以取0
+        loss.backward()
+        optimizer.step()
+        running_loss += loss.data[0]
     # print(epoch)
     print('[epoch %d]\t loss: %.7f \t diff: %.3f \t pos-nums: %d \tneg-num: %d'
           % (epoch + 1,  running_loss, inter_, dist_an, dist_ap))
