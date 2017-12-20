@@ -17,7 +17,7 @@ def euclidean_dist(inputs_):
 
 
 class BatchAllLoss(nn.Module):
-    def __init__(self, margin):
+    def __init__(self, margin=0.2):
         super(BatchAllLoss, self).__init__()
         self.margin = margin
         self.ranking_loss = nn.MarginRankingLoss(margin=self.margin)
@@ -59,7 +59,7 @@ class BatchAllLoss(nn.Module):
             y.fill_(1)
             y = Variable(y)
             # loss.append(nn.MarginRankingLoss(margin=0.2)(pos_dist_, neg_dist_, y))
-            loss.append(self.ranking_loss(pos_dist_, neg_dist_, y))
+            loss.append(self.ranking_loss(neg_dist_, pos_dist_, y))
             prec.append((neg_dist_.data > pos_dist_.data).sum() * 1. / y.size(0))
         loss = torch.mean(torch.cat(loss))
         prec = np.mean(prec)

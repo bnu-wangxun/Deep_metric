@@ -2,11 +2,13 @@ from .triplet import TripletLoss
 from .CenterTriplet import CenterTripletLoss
 from .GaussianMetric import GaussianMetricLoss
 from .HistogramLoss import HistogramLoss
+from .BatchAll import BatchAllLoss
 
 __factory = {
     'triplet': TripletLoss,
     'histogram': HistogramLoss,
-    'gaussian': GaussianMetricLoss
+    'gaussian': GaussianMetricLoss,
+    'batchall': BatchAllLoss,
 }
 
 
