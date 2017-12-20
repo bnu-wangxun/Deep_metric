@@ -29,7 +29,7 @@ https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Song_Deep_Metr
 - [PyTorch](http://pytorch.org)
 - For training, an NVIDIA GPU is strongly recommended for speed. CPU is supported but training is very slow.
 
-## Reproducing LSUN experiments
+## Reproducing Car-196 (or CUB-200-2011) experiments
 
 **With BatchAllLoss:**
 
