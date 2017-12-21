@@ -4,7 +4,6 @@ import argparse
 
 import torch
 from torch.backends import cudnn
-import os.path as osp
 from evaluations import extract_features, pairwise_distance
 from evaluations import Recall_at_1
 import DataSet
@@ -18,19 +17,19 @@ parser.add_argument('-r', type=str, default='model.pkl', metavar='PATH')
 parser.add_argument('-test', type=int, default=1, help='evaluation on test set or train set')
 
 args = parser.parse_args()
-# torch.cuda.set_device(8)
-model_path = osp.join('checkpoint', args.r)
 cudnn.benchmark = True
 
 # model = inception_v3(dropout=0.5)
-model = torch.load(model_path)
+model = torch.load(args.r)
 model = model.cuda()
 
-if args.test==1:
+if args.test == 1:
+    print('evaluation on test set of %s with model: %s' %(args.data, args.r))
     data = DataSet.create(args.data, train=False)
     data_loader = torch.utils.data.DataLoader(
         data.test, batch_size=64, shuffle=False, drop_last=False)
 else:
+    print('evaluation on train set of %s with model: %s' % (args.data, args.r))
     data = DataSet.create(args.data, test=False)
     data_loader = torch.utils.data.DataLoader(
         data.train, batch_size=64, shuffle=False, drop_last=False)
