@@ -122,8 +122,8 @@ for epoch in range(args.epochs):
         optimizer.step()
         running_loss += loss.data[0]
     # print(epoch)
-    print('[epoch %d]\t loss: %.7f \t diff: %.3f \t pos-nums: %d \tneg-num: %d'
-          % (epoch + 1,  running_loss, inter_, dist_an, dist_ap))
+    print('[epoch %05d]\t loss: %.7f \t prec: %.3f \t pos-dist: %.3f \tneg-dist: %.3f'
+          % (epoch + 1,  running_loss, inter_, dist_ap, dist_an))
     if epoch % 200 == 0:
         torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
