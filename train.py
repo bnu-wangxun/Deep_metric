@@ -11,10 +11,8 @@ from models import inception_v3
 import losses
 from utils import RandomIdentitySampler, mkdir_if_missing, logging
 import DataSet
-
-
-torch.cuda.set_device(7)
 cudnn.benchmark = True
+
 
 parser = argparse.ArgumentParser(description='PyTorch Training')
 parser.add_argument('-data', default='car', required=True,
