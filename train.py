@@ -24,14 +24,14 @@ parser.add_argument('-loss', default='gaussian', required=True,
 parser.add_argument('-log_dir', default=None,
                     help='where the trained models save')
 
-parser.add_argument('--BatchSize', '-b', default=128, type=int, metavar='N',
+parser.add_argument('-BatchSize', '-b', default=128, type=int, metavar='N',
                     help='mini-batch size (1 = pure stochastic) Default: 256')
-parser.add_argument('--num_instances', default=4, type=int, metavar='n',
+parser.add_argument('-num_instances', default=4, type=int, metavar='n',
                     help='')
-parser.add_argument('--epochs', '-epochs', default=100, type=int, metavar='N',
+parser.add_argument('-epochs', '-epochs', default=100, type=int, metavar='N',
                     help='epochs for training process')
 # optimizer
-parser.add_argument('--lr', type=float, default=1e-4,
+parser.add_argument('-lr', type=float, default=1e-4,
                     help="learning rate of new parameters, for pretrained "
                          "parameters it is 10 times smaller than this")
 parser.add_argument('--nThreads', '-j', default=4, type=int, metavar='N',
