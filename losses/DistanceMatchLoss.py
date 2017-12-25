@@ -16,9 +16,9 @@ def euclidean_dist(inputs_):
     return dist
 
 
-class NeighbourLoss(nn.Module):
+class DistanceMatchLoss(nn.Module):
     def __init__(self, margin=0.1):
-        super(NeighbourLoss, self).__init__()
+        super(DistanceMatchLoss, self).__init__()
         self.margin = margin
         self.ranking_loss = nn.MarginRankingLoss(margin=self.margin)
 
@@ -26,9 +26,9 @@ class NeighbourLoss(nn.Module):
         n = inputs.size(0)
         # Compute pairwise distance, replace by the official when merged
         dist_mat = euclidean_dist(inputs)
-        targets = targets.cuda()
+        targets = targets
         # split the positive and negative pairs
-        eyes_ = Variable(torch.eye(n, n)).cuda()
+        eyes_ = Variable(torch.eye(n, n))
         pos_mask = targets.expand(n, n).eq(targets.expand(n, n).t())
         neg_mask = eyes_.eq(eyes_) - pos_mask
         pos_mask = pos_mask - eyes_.eq(1)
@@ -85,7 +85,7 @@ def main():
     y_ = 8*list(range(num_class))
     targets = Variable(torch.IntTensor(y_))
 
-    print(NeighbourLoss(margin=0.1)(inputs, targets))
+    print(DistanceMatchLoss(margin=0.1)(inputs, targets))
 
 
 if __name__ == '__main__':
