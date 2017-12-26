@@ -7,7 +7,7 @@ import torch.utils.data
 from torch.backends import cudnn
 import torch.optim as optim
 from torch.autograd import Variable
-from models import inception_v3
+import models
 import losses
 from utils import RandomIdentitySampler, mkdir_if_missing, logging
 import DataSet
@@ -19,6 +19,8 @@ parser.add_argument('-data', default='car', required=True,
                     help='path to dataset')
 parser.add_argument('-loss', default='gaussian', required=True,
                     help='path to dataset')
+parser.add_argument('-net', default='bn',
+                    help='network used')
 parser.add_argument('-log_dir', default=None,
                     help='where the trained models save')
 
@@ -47,20 +49,19 @@ mkdir_if_missing(log_dir)
 # write log
 sys.stdout = logging.Logger(os.path.join(log_dir, 'log.txt'))
 
-model = inception_v3(dropout=None, classify=False)
+model = models.create(args.net)
 
 # load part of the model
 model_dict = model.state_dict()
 # print(model_dict)
+if args.net == 'bn':
+    pretrained_dict = torch.load('pretrained_models/bn_inception-239d2248.pth')
+else:
+    pretrained_dict = torch.load('pretrained_models/inception_v3_google-1a9a5a14.pth')
 
-pretrained_dict = torch.load('pretrained_models/inception_v3_google-1a9a5a14.pth')
-
-# 将pretrained_dict里不属于model_dict的键剔除掉
 pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
 
-# 更新现有的model_dict
 model_dict.update(pretrained_dict)
-# 加载我们真正需要的state_dict
 model.load_state_dict(model_dict)
 # os.mkdir(log_dir)
 torch.save(model, os.path.join(log_dir, 'model.pkl'))
@@ -99,7 +100,6 @@ train_loader = torch.utils.data.DataLoader(
 for epoch in range(args.epochs):
 
     running_loss = 0.0
-    # enumerate(sequence, [start=0])，i序号，data是数据
     for i, data in enumerate(train_loader, 0):
         # get the inputs
         inputs, labels = data
@@ -126,11 +126,6 @@ for epoch in range(args.epochs):
           % (epoch + 1,  running_loss, inter_, dist_ap, dist_an))
     if epoch % 200 == 0:
         torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
-
-    # if epoch == 1000:
-    #     learn_rate /= 5
-    #     optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
-    #                                  weight_decay=args.weight_decay)
 
     if epoch == 1600:
         learn_rate /= 5
