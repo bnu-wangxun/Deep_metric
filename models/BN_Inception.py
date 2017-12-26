@@ -233,6 +233,17 @@ class BNInception(nn.Module):
         self.inception_5b_relu_pool_proj = nn.ReLU (inplace)
         self.Embed = Embedding(1024, 128)
 
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
+                import scipy.stats as stats
+                stddev = m.stddev if hasattr(m, 'stddev') else 0.001
+                X = stats.truncnorm(-2, 2, scale=stddev)
+                values = torch.Tensor(X.rvs(m.weight.data.numel()))
+                m.weight.data.copy_(values)
+            elif isinstance(m, nn.BatchNorm2d):
+                m.weight.data.fill_(1)
+                m.bias.data.zero_()
+
     def forward(self, x):
         x = self.features(x)
         x = F.adaptive_avg_pool2d(x, output_size=1)
