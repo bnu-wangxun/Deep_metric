@@ -74,8 +74,8 @@ criterion = losses.create(args.loss).cuda()
 # fine tune the model: the learning rate for pretrained parameter is 1/10
 base_param_ids = set(map(id, model.Embed.parameters()))
 
-if model.classify:
-    base_param_ids = base_param_ids | set(map(id, model.logits_.parameters()))
+#if model.classify:
+#    base_param_ids = base_param_ids | set(map(id, model.logits_.parameters()))
 
 base_params = [p for p in model.parameters() if
                id(p) in base_param_ids]
