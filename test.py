@@ -5,7 +5,7 @@ import argparse
 import torch
 from torch.backends import cudnn
 from evaluations import extract_features, pairwise_distance
-from evaluations import Recall_at_1
+from evaluations import Recall_at_ks
 import DataSet
 
 cudnn.benchmark = True
@@ -34,8 +34,8 @@ else:
     data_loader = torch.utils.data.DataLoader(
         data.train, batch_size=64, shuffle=False, drop_last=False)
 
-features, labels = extract_features(model, data_loader, print_freq=1, metric=None)
+features, labels = extract_features(model, data_loader, print_freq=30, metric=None)
 
 # print(len(features))
 dist_mat = pairwise_distance(features)
-print(Recall_at_1(dist_mat, query_ids=labels, gallery_ids=labels))
+print(Recall_at_ks(dist_mat, query_ids=labels, gallery_ids=labels))

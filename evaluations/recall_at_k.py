@@ -1,3 +1,4 @@
+# coding : utf-8
 from __future__ import absolute_import
 import torch
 import numpy as np
@@ -9,7 +10,6 @@ def Recall_at_ks(distmat, query_ids=None, gallery_ids=None):
     :param distmat:
     :param query_ids
     :param gallery_ids
-    :return [R@1, R@2， R@4， R@8】
 
     for the Deep Metric problem, following the evaluation table of Proxy NCA loss
     only compute the [R@1, R@2, R@4, R@8]
