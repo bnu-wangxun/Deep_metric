@@ -35,7 +35,7 @@ def Recall_at_ks(distmat, query_ids=None, gallery_ids=None):
         elif query_ids[i] in gallery_ids[indices[i, 1:4]]:
             num_valid[2:] += 1
         elif query_ids[i] in gallery_ids[indices[i, 4:8]]:
-            num_valid[3:] += 1
+            num_valid[3] += 1
     return num_valid/float(m)
 
 

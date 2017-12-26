@@ -17,7 +17,7 @@ def euclidean_dist(inputs_):
 
 
 class DistanceMatchLoss(nn.Module):
-    def __init__(self, margin=0.1):
+    def __init__(self, margin=0.05):
         super(DistanceMatchLoss, self).__init__()
         self.margin = margin
         self.ranking_loss = nn.MarginRankingLoss(margin=self.margin)
@@ -26,9 +26,9 @@ class DistanceMatchLoss(nn.Module):
         n = inputs.size(0)
         # Compute pairwise distance, replace by the official when merged
         dist_mat = euclidean_dist(inputs)
-        targets = targets
+        targets = targets.cuda()
         # split the positive and negative pairs
-        eyes_ = Variable(torch.eye(n, n))
+        eyes_ = Variable(torch.eye(n, n)).cuda()
         pos_mask = targets.expand(n, n).eq(targets.expand(n, n).t())
         neg_mask = eyes_.eq(eyes_) - pos_mask
         pos_mask = pos_mask - eyes_.eq(1)
@@ -51,17 +51,26 @@ class DistanceMatchLoss(nn.Module):
 
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_dist[i])[0]
+            times_neg_pos = len(neg_pair)//len(pos_pair)
 
-            pos_min = pos_pair[0]
-            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_min + 0.05)
-            if len(neg_pair) > 0:
-                loss.append(pos_min - torch.mean(neg_pair) + 0.05)
+            # maybe cuda is needed here
+            y = Variable(torch.ones(times_neg_pos)).cuda()
+            loss_list = list()
+            for j, pos_ in enumerate(pos_pair):
+                neg_ = neg_pair[j*times_neg_pos:(j+1)*times_neg_pos]
+                pos_ = pos_.repeat(times_neg_pos)
+                loss_one_pos = self.ranking_loss(neg_, pos_, y)
+                loss_list.append(loss_one_pos)
+            loss_ = torch.sum(torch.cat(loss_list))
+            loss.append(loss_)
+            # print(loss_)
+
+            # update the err number
+
+            if loss_.data[0] > 1e-3:
                 err += 1
 
-        if len(loss) == 0:
-            loss = torch.clamp(pos_pair, max=0)
-        else:
-            loss = torch.sum(torch.cat(loss))/n
+        loss = torch.mean(torch.cat(loss))/n
         prec = 1 - float(err)/n
         neg_d = torch.mean(neg_dist).data[0]
         pos_d = torch.mean(pos_dist).data[0]
