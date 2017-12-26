@@ -23,7 +23,7 @@ parser.add_argument('-net', default='bn',
                     help='network used')
 parser.add_argument('-r', default=None,
                     help='the path of the pre-trained model')
-parser.add_argument('-start', default=0,
+parser.add_argument('-start', default=0, type=int,
                     help='resume epoch')
 
 parser.add_argument('-log_dir', default=None,
@@ -137,8 +137,8 @@ for epoch in range(args.start, args.epochs):
     if epoch % 100 == 0:
         torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
-    if epoch == 801:
-        learn_rate /= 5
+    if epoch == 802:
+        learn_rate /= 10
         optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
                                      weight_decay=args.weight_decay)
     if epoch == 1200:
