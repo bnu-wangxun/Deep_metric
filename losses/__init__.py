@@ -4,6 +4,7 @@ from .GaussianMetric import GaussianMetricLoss
 from .HistogramLoss import HistogramLoss
 from .BatchAll import BatchAllLoss
 from .NeighbourLoss import NeighbourLoss
+from .DistanceMatchLoss import DistanceMatchLoss
 
 __factory = {
     'triplet': TripletLoss,
@@ -11,6 +12,7 @@ __factory = {
     'gaussian': GaussianMetricLoss,
     'batchall': BatchAllLoss,
     'neighbour': NeighbourLoss,
+    'distance_match': DistanceMatchLoss,
 }
 
 

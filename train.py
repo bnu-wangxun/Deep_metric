@@ -127,10 +127,10 @@ for epoch in range(args.epochs):
     if epoch % 200 == 0:
         torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
-    if epoch == 1000:
-        learn_rate /= 5
-        optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
-                                     weight_decay=args.weight_decay)
+    # if epoch == 1000:
+    #     learn_rate /= 5
+    #     optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
+    #                                  weight_decay=args.weight_decay)
 
     if epoch == 1600:
         learn_rate /= 5
