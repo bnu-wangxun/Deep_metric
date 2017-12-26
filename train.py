@@ -21,6 +21,11 @@ parser.add_argument('-loss', default='gaussian', required=True,
                     help='path to dataset')
 parser.add_argument('-net', default='bn',
                     help='network used')
+parser.add_argument('-r', default=None,
+                    help='the path of the pre-trained model')
+parser.add_argument('-start', default=0,
+                    help='resume epoch')
+
 parser.add_argument('-log_dir', default=None,
                     help='where the trained models save')
 
@@ -49,22 +54,27 @@ mkdir_if_missing(log_dir)
 # write log
 sys.stdout = logging.Logger(os.path.join(log_dir, 'log.txt'))
 
-model = models.create(args.net)
-
-# load part of the model
-model_dict = model.state_dict()
-# print(model_dict)
-if args.net == 'bn':
-    pretrained_dict = torch.load('pretrained_models/bn_inception-239d2248.pth')
+if args.r is not None:
+    model = torch.load(args.r)
 else:
-    pretrained_dict = torch.load('pretrained_models/inception_v3_google-1a9a5a14.pth')
+    model = models.create(args.net)
 
-pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
+    # load part of the model
+    model_dict = model.state_dict()
+    # print(model_dict)
 
-model_dict.update(pretrained_dict)
-model.load_state_dict(model_dict)
-# os.mkdir(log_dir)
-torch.save(model, os.path.join(log_dir, 'model.pkl'))
+    if args.net == 'bn':
+        pretrained_dict = torch.load('pretrained_models/bn_inception-239d2248.pth')
+    else:
+        pretrained_dict = torch.load('pretrained_models/inception_v3_google-1a9a5a14.pth')
+
+    pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
+
+    model_dict.update(pretrained_dict)
+    model.load_state_dict(model_dict)
+    # os.mkdir(log_dir)
+    torch.save(model, os.path.join(log_dir, 'model.pkl'))
+
 model = model.cuda()
 # print(model.parameters())
 
@@ -97,7 +107,7 @@ train_loader = torch.utils.data.DataLoader(
     sampler=RandomIdentitySampler(data.train, num_instances=args.num_instances),
     drop_last=True, num_workers=args.nThreads)
 
-for epoch in range(args.epochs):
+for epoch in range(args.start, args.epochs):
 
     running_loss = 0.0
     for i, data in enumerate(train_loader, 0):
@@ -124,14 +134,14 @@ for epoch in range(args.epochs):
     # print(epoch)
     print('[epoch %05d]\t loss: %.7f \t prec: %.3f \t pos-dist: %.3f \tneg-dist: %.3f'
           % (epoch + 1,  running_loss, inter_, dist_ap, dist_an))
-    if epoch % 200 == 0:
+    if epoch % 100 == 0:
         torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
-    if epoch == 1600:
+    if epoch == 801:
         learn_rate /= 5
         optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
                                      weight_decay=args.weight_decay)
-    if epoch == 2000:
+    if epoch == 1200:
         learn_rate /= 5
         optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
                                      weight_decay=args.weight_decay)
