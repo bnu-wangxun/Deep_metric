@@ -134,15 +134,15 @@ for epoch in range(args.start, args.epochs):
     # print(epoch)
     print('[epoch %05d]\t loss: %.7f \t prec: %.3f \t pos-dist: %.3f \tneg-dist: %.3f'
           % (epoch + 1,  running_loss, inter_, dist_ap, dist_an))
-    if epoch % 100 == 0:
+    if epoch % 200 == 0:
         torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
-    if epoch == 802:
+    if epoch == 2000:
         learn_rate /= 10
         optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
                                      weight_decay=args.weight_decay)
-    if epoch == 1200:
-        learn_rate /= 5
+    if epoch == 3000:
+        learn_rate /= 10
         optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
                                      weight_decay=args.weight_decay)
 

@@ -27,14 +27,14 @@ if args.test == 1:
     print('evaluation on test set of %s with model: %s' %(args.data, args.r))
     data = DataSet.create(args.data, train=False)
     data_loader = torch.utils.data.DataLoader(
-        data.test, batch_size=16, shuffle=False, drop_last=False)
+        data.test, batch_size=64, shuffle=False, drop_last=False)
 else:
     print('evaluation on train set of %s with model: %s' % (args.data, args.r))
     data = DataSet.create(args.data, test=False)
     data_loader = torch.utils.data.DataLoader(
         data.train, batch_size=64, shuffle=False, drop_last=False)
 
-features, labels = extract_features(model, data_loader, print_freq=30, metric=None)
+features, labels = extract_features(model, data_loader, print_freq=932, metric=None)
 
 # print(len(features))
 dist_mat = pairwise_distance(features)

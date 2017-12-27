@@ -7,7 +7,7 @@ from torch.autograd import Variable
 
 
 class NeighbourHardLoss(nn.Module):
-    def __init__(self, margin=0):
+    def __init__(self, margin=0.05):
         super(NeighbourHardLoss, self).__init__()
         self.margin = margin
         self.ranking_loss = nn.MarginRankingLoss(margin=margin)
@@ -38,8 +38,8 @@ class NeighbourHardLoss(nn.Module):
         y = Variable(y)
         loss = self.ranking_loss(dist_an, dist_ap, y)
         prec = (dist_an.data > dist_ap.data).sum() * 1. / y.size(0)
-        dist_ap = torch.mean(dist_ap).data[0]
-        dist_an = torch.mean(dist_an).data[0]
+        dist_ap = torch.mean(dist.masked_select(pos_mask)).data[0]
+        dist_an = torch.mean(dist.masked_select(mask==0)).data[0]
         return loss, prec, dist_ap, dist_an
 
 

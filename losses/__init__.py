@@ -14,7 +14,7 @@ __factory = {
     'batchall': BatchAllLoss,
     'neighbour': NeighbourLoss,
     'distance_match': DistanceMatchLoss,
-    'neig_hard': NeighbourHardLoss,
+    'neighard': NeighbourHardLoss,
 }
 
 
