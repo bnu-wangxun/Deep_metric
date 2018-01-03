@@ -53,9 +53,9 @@ class NeighbourLoss(nn.Module):
             neg_pair = torch.sort(neg_dist[i])[0]
 
             pos_min = pos_pair[0]
-            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_min + 0.05)
+            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_min + 0.1)
             if len(neg_pair) > 0:
-                loss.append(pos_min - torch.mean(neg_pair) + 0.05)
+                loss.append(pos_min - torch.mean(neg_pair) + 0.1)
                 err += 1
 
         if len(loss) == 0:

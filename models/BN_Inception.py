@@ -9,7 +9,7 @@ __all__ = ['BNInception', 'bninception']
 
 
 class BNInception(nn.Module):
-    def __init__(self, Embed_dim=256):
+    def __init__(self, Embed_dim=512):
         super(BNInception, self).__init__()
         self.Embed_dim = Embed_dim
         inplace = True
