@@ -1,8 +1,10 @@
 from .CUB200 import CUB200
 from .Car196 import Car196
+from .Products import Products
 __factory = {
     'cub': CUB200,
-    'car': Car196,	
+    'car': Car196,
+    'products': Products,
 }
 
 

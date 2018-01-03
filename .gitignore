@@ -226,5 +226,6 @@ ENV/
 # Project specific
 DataSet/Car196/
 DataSet/CUB_200_2011/
+DataSet/Products/
 pretrained*
 checkpoint*
