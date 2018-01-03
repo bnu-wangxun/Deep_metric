@@ -107,8 +107,16 @@ train_loader = torch.utils.data.DataLoader(
     sampler=RandomIdentitySampler(data.train, num_instances=args.num_instances),
     drop_last=True, num_workers=args.nThreads)
 
-for epoch in range(args.start, args.epochs):
 
+def adjust_learning_rate(opt_, epoch_, num_epochs):
+    """Sets the learning rate to the initial LR decayed by 1000 at last 200 epochs"""
+    if epoch_ > (num_epochs - 200):
+        lr = args.lr * (0.001 ** ((epoch_ + 200 - num_epochs) / 200.0))
+        for param_group in opt_.param_groups:
+            param_group['lr'] = lr
+
+for epoch in range(args.start, args.epochs):
+    adjust_learning_rate(optimizer, epoch, args.epochs)
     running_loss = 0.0
     for i, data in enumerate(train_loader, 0):
         # get the inputs
@@ -137,14 +145,14 @@ for epoch in range(args.start, args.epochs):
     if epoch % 200 == 0:
         torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
-    if epoch == 2000:
-        learn_rate /= 10
-        optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
-                                     weight_decay=args.weight_decay)
-    if epoch == 3000:
-        learn_rate /= 10
-        optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
-                                     weight_decay=args.weight_decay)
+    # if epoch == 2000:
+    #     learn_rate /= 10
+    #     optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
+    #                                  weight_decay=args.weight_decay)
+    # if epoch == 3000:
+    #     learn_rate /= 10
+    #     optimizer = torch.optim.Adam(param_groups, lr=learn_rate,
+    #                                  weight_decay=args.weight_decay)
 
 torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 

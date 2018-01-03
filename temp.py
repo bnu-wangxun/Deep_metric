@@ -1,23 +1,22 @@
 from __future__ import print_function, absolute_import
 import torch
 from torch.autograd import Variable
+import torch.optim as optim
 import models
 
-pretrained_dict = torch.load('pretrain_models/bn_inception-239d2248.pth')
 model = models.create('bn')
 
-# load part of the model
-model_dict = model.state_dict()
-# print(model_dict)
+params = [p for p in model.parameters()]
+param_groups = [
+            {'params': params, 'lr_mult': 0.01}]
 
-pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
+optimizer = optim.Adam(param_groups, lr=0.01)
 
-# 更新现有的model_dict
-model_dict.update(pretrained_dict)
-# 加载我们真正需要的state_dict
-model.load_state_dict(model_dict)
-
-input = torch.Tensor(1, 3, 224, 224)
-input = Variable(input)
-output = model(input)
-# print(output)
+#
+# def adjust_learning_rate(opt_, epoch_, num_epochs):
+#     """Sets the learning rate to the initial LR decayed by 1000 at last 200 epochs"""
+#     if epoch_ > (num_epochs - 200):
+#         lr = args.lr * (0.001 ** ((epoch_ + 200 - num_epochs) / 200.0))
+for param_group in optimizer.param_groups:
+    param_group['lr'] = 0.001
+    print(param_group['lr'])
