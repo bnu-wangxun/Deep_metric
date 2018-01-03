@@ -7,8 +7,9 @@ import sys
 
 __all__ = ['BNInception', 'bninception']
 
+
 class BNInception(nn.Module):
-    def __init__(self, Embed_dim=128):
+    def __init__(self, Embed_dim=64):
         super(BNInception, self).__init__()
         self.Embed_dim = Embed_dim
         inplace = True
@@ -231,7 +232,7 @@ class BNInception(nn.Module):
         self.inception_5b_pool_proj = nn.Conv2d(1024, 128, kernel_size=(1, 1), stride=(1, 1))
         self.inception_5b_pool_proj_bn = nn.BatchNorm2d(128, eps=1e-05, momentum=0.9, affine=True)
         self.inception_5b_relu_pool_proj = nn.ReLU (inplace)
-        self.Embed = Embedding(1024, 128)
+        self.Embed = Embedding(1024, self.Embed_dim)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
@@ -512,7 +513,7 @@ class Embedding(nn.Module):
 def bninception():
     r"""BNInception model architecture from <https://arxiv.org/pdf/1502.03167.pdf>`_ paper.
     """
-    model = BNInception(Embed_dim=128)
+    model = BNInception(Embed_dim=64)
     return model
 #
 #
