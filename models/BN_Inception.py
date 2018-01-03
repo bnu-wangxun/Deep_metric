@@ -9,7 +9,7 @@ __all__ = ['BNInception', 'bninception']
 
 
 class BNInception(nn.Module):
-    def __init__(self, Embed_dim=64):
+    def __init__(self, Embed_dim=256):
         super(BNInception, self).__init__()
         self.Embed_dim = Embed_dim
         inplace = True
@@ -513,7 +513,7 @@ class Embedding(nn.Module):
 def bninception():
     r"""BNInception model architecture from <https://arxiv.org/pdf/1502.03167.pdf>`_ paper.
     """
-    model = BNInception(Embed_dim=64)
+    model = BNInception(Embed_dim=256)
     return model
 #
 #
