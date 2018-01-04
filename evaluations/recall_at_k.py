@@ -20,6 +20,7 @@ def Recall_at_ks(sim_mat, query_ids=None, gallery_ids=None):
     """
     sim_mat = to_numpy(sim_mat)
     m, n = sim_mat.shape
+    num_max = int(1e2)
     # Fill up default values
     gallery_ids = np.asarray(gallery_ids)
     if query_ids is None:
@@ -27,13 +28,13 @@ def Recall_at_ks(sim_mat, query_ids=None, gallery_ids=None):
     if gallery_ids is None:
         gallery_ids = np.arange(n)
     # Ensure numpy array
-    if m > int(1e4):
+    if m > num_max:
         samples = list(range(m))
         random.shuffle(samples)
-        samples = samples[:int(1e4)]
+        samples = samples[:num_max]
         sim_mat = sim_mat[samples, :]
         query_ids = [query_ids[k] for k in samples]
-        m = int(1e4)
+        m = num_max
     else:
         query_ids = np.asarray(query_ids)
 

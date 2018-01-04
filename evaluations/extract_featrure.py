@@ -64,7 +64,7 @@ def pairwise_similarity(features):
     x = torch.cat(features)
     x = x.view(n, -1)
     # print(4*'\n', x.size())
-    similarity = torch.mm(x, x.t())
+    similarity = torch.mm(x, x.t()) - 1e5 * torch.eye(n)
     return similarity
 
 #
