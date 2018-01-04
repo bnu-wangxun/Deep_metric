@@ -57,7 +57,7 @@ sys.stdout = logging.Logger(os.path.join(log_dir, 'log.txt'))
 if args.r is not None:
     model = torch.load(args.r)
 else:
-    model = models.create(args.net)
+    model = models.create(args.net, Embed_dim=512)
 
     # load part of the model
     model_dict = model.state_dict()
@@ -110,8 +110,8 @@ train_loader = torch.utils.data.DataLoader(
 
 def adjust_learning_rate(opt_, epoch_, num_epochs):
     """Sets the learning rate to the initial LR decayed by 1000 at last 200 epochs"""
-    if epoch_ > (num_epochs - 200):
-        lr = args.lr * (0.001 ** ((epoch_ + 200 - num_epochs) / 200.0))
+    if epoch_ > (num_epochs - 20):
+        lr = args.lr * (0.001 ** ((epoch_ + 20 - num_epochs) / 20.0))
         for param_group in opt_.param_groups:
             param_group['lr'] = lr
 
@@ -142,7 +142,7 @@ for epoch in range(args.start, args.epochs):
     # print(epoch)
     print('[epoch %05d]\t loss: %.7f \t prec: %.3f \t pos-dist: %.3f \tneg-dist: %.3f'
           % (epoch + 1,  running_loss, inter_, dist_ap, dist_an))
-    if epoch % 200 == 0:
+    if epoch % 20 == 0:
         torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
     # if epoch == 2000:
