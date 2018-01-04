@@ -20,7 +20,7 @@ def Recall_at_ks(sim_mat, query_ids=None, gallery_ids=None):
     """
     sim_mat = to_numpy(sim_mat)
     m, n = sim_mat.shape
-    num_max = int(1e2)
+    num_max = int(1e4)
     # Fill up default values
     gallery_ids = np.asarray(gallery_ids)
     if query_ids is None:

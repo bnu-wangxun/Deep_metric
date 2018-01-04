@@ -116,7 +116,7 @@ def adjust_learning_rate(opt_, epoch_, num_epochs):
     """Sets the learning rate to the initial LR decayed by 1000 at last 200 epochs"""
     if epoch_ > (num_epochs - args.step):
         lr = args.lr * \
-             (0.001 ** ((epoch_ + args.step - num_epochs) / float(args.step)))
+             (0.01 ** ((epoch_ + args.step - num_epochs) / float(args.step)))
         for param_group in opt_.param_groups:
             param_group['lr'] = lr
 
