@@ -4,7 +4,7 @@ import argparse
 
 import torch
 from torch.backends import cudnn
-from evaluations import extract_features, pairwise_distance
+from evaluations import extract_features, pairwise_similarity
 from evaluations import Recall_at_ks
 import DataSet
 
@@ -37,5 +37,5 @@ else:
 features, labels = extract_features(model, data_loader, print_freq=932, metric=None)
 
 # print(len(features))
-dist_mat = pairwise_distance(features)
-print(Recall_at_ks(dist_mat, query_ids=labels, gallery_ids=labels))
+sim_mat = pairwise_similarity(features)
+print(Recall_at_ks(sim_mat, query_ids=labels, gallery_ids=labels))
