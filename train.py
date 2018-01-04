@@ -35,6 +35,10 @@ parser.add_argument('-num_instances', default=4, type=int, metavar='n',
                     help='')
 parser.add_argument('-epochs', '-epochs', default=100, type=int, metavar='N',
                     help='epochs for training process')
+parser.add_argument('-step', '-s', default=200, type=int, metavar='N',
+                    help='number of epochs to save model')
+
+
 # optimizer
 parser.add_argument('-lr', type=float, default=1e-4,
                     help="learning rate of new parameters, for pretrained "
@@ -110,8 +114,9 @@ train_loader = torch.utils.data.DataLoader(
 
 def adjust_learning_rate(opt_, epoch_, num_epochs):
     """Sets the learning rate to the initial LR decayed by 1000 at last 200 epochs"""
-    if epoch_ > (num_epochs - 20):
-        lr = args.lr * (0.001 ** ((epoch_ + 20 - num_epochs) / 20.0))
+    if epoch_ > (num_epochs - args.step):
+        lr = args.lr * \
+             (0.001 ** ((epoch_ + args.step - num_epochs) / float(args.step)))
         for param_group in opt_.param_groups:
             param_group['lr'] = lr
 
@@ -142,7 +147,7 @@ for epoch in range(args.start, args.epochs):
     # print(epoch)
     print('[epoch %05d]\t loss: %.7f \t prec: %.3f \t pos-dist: %.3f \tneg-dist: %.3f'
           % (epoch + 1,  running_loss, inter_, dist_ap, dist_an))
-    if epoch % 20 == 0:
+    if epoch % args.step == 0:
         torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
     # if epoch == 2000:

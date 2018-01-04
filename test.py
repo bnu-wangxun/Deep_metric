@@ -34,7 +34,7 @@ else:
     data_loader = torch.utils.data.DataLoader(
         data.train, batch_size=64, shuffle=False, drop_last=False)
 
-features, labels = extract_features(model, data_loader, print_freq=932, metric=None)
+features, labels = extract_features(model, data_loader, print_freq=32, metric=None)
 
 # print(len(features))
 sim_mat = pairwise_similarity(features)
