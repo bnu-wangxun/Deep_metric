@@ -58,6 +58,12 @@ mkdir_if_missing(log_dir)
 # write log
 sys.stdout = logging.Logger(os.path.join(log_dir, 'log.txt'))
 
+
+print('train on dataset %s' % args.data)
+print('batchsize is: %d' % args.BatchSize)
+print('num_instance is %d' % args.num_instances)
+print('log dir is: %s' % args.log_dir)
+
 if args.r is not None:
     model = torch.load(args.r)
 else:
@@ -77,7 +83,7 @@ else:
     model_dict.update(pretrained_dict)
     model.load_state_dict(model_dict)
     # os.mkdir(log_dir)
-    torch.save(model, os.path.join(log_dir, 'model.pkl'))
+    # torch.save(model, os.path.join(log_dir, 'model.pkl'))
 
 model = model.cuda()
 # print(model.parameters())
@@ -116,7 +122,7 @@ def adjust_learning_rate(opt_, epoch_, num_epochs):
     """Sets the learning rate to the initial LR decayed by 1000 at last 200 epochs"""
     if epoch_ > (num_epochs - args.step):
         lr = args.lr * \
-             (0.01 ** ((epoch_ + args.step - num_epochs) / float(args.step)))
+             (0.001 ** ((epoch_ + args.step - num_epochs) / float(args.step)))
         for param_group in opt_.param_groups:
             param_group['lr'] = lr
 
