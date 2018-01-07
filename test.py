@@ -35,6 +35,7 @@ else:
         data.train, batch_size=64, shuffle=False, drop_last=False)
 
 features, labels = extract_features(model, data_loader, print_freq=32, metric=None)
+print('embedding dimension is:', len(features[0]))
 
 print('compute the NMI index:', NMI(features, labels, n_cluster=int(1e3)))
 
