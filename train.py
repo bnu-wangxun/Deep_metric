@@ -61,7 +61,7 @@ sys.stdout = logging.Logger(os.path.join(log_dir, 'log.txt'))
 if args.r is not None:
     model = torch.load(args.r)
 else:
-    model = models.create(args.net, Embed_dim=256)
+    model = models.create(args.net, Embed_dim=512)
 
     # load part of the model
     model_dict = model.state_dict()
