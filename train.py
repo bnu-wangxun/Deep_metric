@@ -37,6 +37,9 @@ parser.add_argument('-epochs', '-epochs', default=100, type=int, metavar='N',
                     help='epochs for training process')
 parser.add_argument('-step', '-s', default=200, type=int, metavar='N',
                     help='number of epochs to save model')
+parser.add_argument('-save_step', default=40, type=int, metavar='N',
+                    help='number of epochs to save model')
+
 
 
 # optimizer
@@ -153,7 +156,7 @@ for epoch in range(args.start, args.epochs):
     # print(epoch)
     print('[epoch %05d]\t loss: %.7f \t prec: %.3f \t pos-dist: %.3f \tneg-dist: %.3f'
           % (epoch + 1,  running_loss, inter_, dist_ap, dist_an))
-    if epoch % args.step == 0:
+    if epoch % args.save_step == 0:
         torch.save(model, os.path.join(log_dir, '%d_model.pkl' % epoch))
 
     # if epoch == 2000:
