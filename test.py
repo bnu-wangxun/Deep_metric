@@ -5,7 +5,7 @@ import argparse
 import torch
 from torch.backends import cudnn
 from evaluations import extract_features, pairwise_similarity
-from evaluations import Recall_at_ks
+from evaluations import Recall_at_ks, NMI
 import DataSet
 
 cudnn.benchmark = True
@@ -35,6 +35,8 @@ else:
         data.train, batch_size=64, shuffle=False, drop_last=False)
 
 features, labels = extract_features(model, data_loader, print_freq=32, metric=None)
+
+print('compute the NMI index:', NMI(features, labels, n_cluster=int(1e3)))
 
 # print(len(features))
 sim_mat = pairwise_similarity(features)
