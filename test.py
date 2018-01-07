@@ -36,7 +36,7 @@ else:
 
 features, labels = extract_features(model, data_loader, print_freq=32, metric=None)
 print('embedding dimension is:', len(features[0]))
-
+print('number of classes is :', len(set(labels)))
 print('compute the NMI index:', NMI(features, labels, n_cluster=int(1e3)))
 
 # print(len(features))
