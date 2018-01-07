@@ -36,8 +36,9 @@ else:
 
 features, labels = extract_features(model, data_loader, print_freq=32, metric=None)
 print('embedding dimension is:', len(features[0]))
-# print('number of classes is :', len(set(labels)))
-print('compute the NMI index:', NMI(features, labels, n_cluster=100))
+num_class = len(set(labels))
+print('number of classes is :', num_class)
+print('compute the NMI index:', NMI(features, labels, n_cluster=num_class))
 
 # print(len(features))
 sim_mat = pairwise_similarity(features)
