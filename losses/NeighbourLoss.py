@@ -27,10 +27,8 @@ class NeighbourLoss(nn.Module):
         # Compute pairwise distance, replace by the official when merged
         dist_mat = euclidean_dist(inputs)
         targets = targets.cuda()
-
         # split the positive and negative pairs
         eyes_ = Variable(torch.eye(n, n)).cuda()
-        # eyes_ = Variable(torch.eye(n, n))
         pos_mask = targets.expand(n, n).eq(targets.expand(n, n).t())
         neg_mask = eyes_.eq(eyes_) - pos_mask
         pos_mask = pos_mask - eyes_.eq(1)
@@ -52,21 +50,18 @@ class NeighbourLoss(nn.Module):
         for i, pos_pair in enumerate(pos_dist):
 
             pos_pair = torch.sort(pos_pair)[0]
-            neg_pair = neg_dist[i]
+            neg_pair = torch.sort(neg_dist[i])[0]
 
-            pos_pair_ = pos_pair[0].repeat(num_neg_instances)
-
-            # neg_pair = torch.masked_select(neg_pair, neg_pair < pos_min + 0.1)
-            y = neg_pair.data.new()
-            y.resize_as_(neg_pair.data)
-            y.fill_(1)
-            y = Variable(y)
-            loss_ = self.ranking_loss(neg_pair, pos_pair_, y)
-            loss.append(loss_)
-            if loss_.data[0] > 0:
+            pos_min = pos_pair[0]
+            neg_pair = torch.masked_select(neg_pair, neg_pair < pos_min + 0.1)
+            if len(neg_pair) > 0:
+                loss.append(pos_min - torch.mean(neg_pair) + 0.1)
                 err += 1
 
-        loss = torch.sum(torch.cat(loss))/n
+        if len(loss) == 0:
+            loss = 1e-20 * (torch.mean(pos_min))
+        else:
+            loss = torch.sum(torch.cat(loss))/n
         prec = 1 - float(err)/n
         neg_d = torch.mean(neg_dist).data[0]
         pos_d = torch.mean(pos_dist).data[0]
