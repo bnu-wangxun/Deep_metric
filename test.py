@@ -42,5 +42,7 @@ print('compute the NMI index:', NMI(features, labels, n_cluster=num_class))
 
 # print(len(features))
 sim_mat = pairwise_similarity(features)
-print(Recall_at_ks(sim_mat, query_ids=labels, gallery_ids=labels))
-print(Recall_at_ks_products(sim_mat, query_ids=labels, gallery_ids=labels))
+if args.data == 'products':
+    print(Recall_at_ks_products(sim_mat, query_ids=labels, gallery_ids=labels))
+else:
+    print(Recall_at_ks(sim_mat, query_ids=labels, gallery_ids=labels))
