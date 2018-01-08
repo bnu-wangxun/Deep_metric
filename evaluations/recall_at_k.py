@@ -96,9 +96,9 @@ def Recall_at_ks_products(sim_mat, query_ids=None, gallery_ids=None):
         if query_ids[i] == gallery_ids[indice[0]]:
             num_valid += 1
         elif query_ids[i] in gallery_ids[indice[1:10]]:
-            num_valid[2:] += 1
+            num_valid[1:] += 1
         elif query_ids[i] in gallery_ids[indice[10:]]:
-            num_valid[3] += 1
+            num_valid[2] += 1
     return num_valid/float(m)
 
 def main():
