@@ -29,6 +29,7 @@ class NeighbourLoss(nn.Module):
         targets = targets.cuda()
         # split the positive and negative pairs
         eyes_ = Variable(torch.eye(n, n)).cuda()
+        # eyes_ = Variable(torch.eye(n, n))
         pos_mask = targets.expand(n, n).eq(targets.expand(n, n).t())
         neg_mask = eyes_.eq(eyes_) - pos_mask
         pos_mask = pos_mask - eyes_.eq(1)
@@ -47,24 +48,36 @@ class NeighbourLoss(nn.Module):
         loss = list()
         # prec = list()
         err = 0
+        num_hard_pos = 0
+
         for i, pos_pair in enumerate(pos_dist):
 
             pos_pair = torch.sort(pos_pair)[0]
             neg_pair = torch.sort(neg_dist[i])[0]
 
+            neg_threshold = neg_pair[int(num_neg_instances*0.8)]
+            hard_pos_pair = torch.masked_select(pos_pair, pos_pair > neg_threshold)
+            if len(hard_pos_pair) > 0:
+                # print('number of hard positive is: %03d' % len(hard_pos_pair))
+                pos_loss = torch.mean(hard_pos_pair)
+                num_hard_pos += len(hard_pos_pair)
+            else:
+                pos_loss = 0
+
             pos_min = pos_pair[0]
             neg_pair = torch.masked_select(neg_pair, neg_pair < pos_min + 0.1)
             if len(neg_pair) > 0:
-                loss.append(pos_min - torch.mean(neg_pair) + 0.1)
+                loss.append(pos_min - torch.mean(neg_pair) + 0.1 + 0.1*pos_loss)
                 err += 1
 
         if len(loss) == 0:
-            loss = 1e-20 * (torch.mean(pos_min))
+            loss = 0.0 * (torch.mean(pos_min))
         else:
             loss = torch.sum(torch.cat(loss))/n
         prec = 1 - float(err)/n
         neg_d = torch.mean(neg_dist).data[0]
         pos_d = torch.mean(pos_dist).data[0]
+        print('number of hard positive is: %03d' % num_hard_pos)
         return loss, prec, pos_d, neg_d
 
 
