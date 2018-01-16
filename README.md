@@ -44,3 +44,5 @@ images of 11,316 classes for testing
 ```bash
 sh run_train.sh
 ```
+
+To reproduce other experiments, you can edit the run_train.sh file by yourself.
