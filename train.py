@@ -38,7 +38,7 @@ def main(args):
     display(args)
     start = 0
 
-    model = models.create(args.net, pretrained=True, dim=args.dim)
+    model = models.create(args.net, pretrained=False, dim=args.dim)
 
     # for vgg and densenet
     if args.resume is None:

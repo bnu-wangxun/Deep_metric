@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 DATA=cub
-DATA_ROOT=/opt/data/users/xunwang/DataSet
+DATA_ROOT=/home/siit_x99_2/navi/data/input_data
 Gallery_eq_Query=True
 LOSS=WeightLoss
-CHECKPOINTS=/opt/data/users/xunwang/checkpoints
+CHECKPOINTS=/home/siit_x99_2/navi/cswork/siit/dml/checkpoint
 R=.pth.tar
 
 if_exist_mkdir ()

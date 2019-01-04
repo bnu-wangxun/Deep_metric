@@ -68,7 +68,9 @@ class WeightLoss(nn.Module):
 
                 pos_loss = 2.0/self.beta * torch.log(1 + torch.sum(torch.exp(-self.beta * (pos_pair - base))))
                 neg_loss = 2.0/self.alpha * torch.log(1 + torch.sum(torch.exp(self.alpha * (neg_pair - base))))
-                loss.append(pos_loss + neg_loss)
+                loss_ = pos_loss + neg_loss
+                loss_.unsqueeze_(-1)
+                loss.append(loss_)
 
             else:
                 # print('hello world')
@@ -77,7 +79,9 @@ class WeightLoss(nn.Module):
                 pos_loss = 2.0/self.beta * torch.log(1 + torch.sum(torch.exp(-self.beta * (pos_pair - base))))
                 neg_loss = 2.0/self.alpha * torch.log(1 + torch.sum(torch.exp(self.alpha * (neg_pair - base))))
 
-                loss.append(pos_loss + neg_loss)
+                loss_ = pos_loss + neg_loss
+                loss_.unsqueeze_(-1)
+                loss.append(loss_)
 
         loss = torch.sum(torch.cat(loss))/n
         prec = float(c)/n
