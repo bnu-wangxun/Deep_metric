@@ -22,7 +22,7 @@ parser.add_argument('--width', type=int, default=224,
                     help='width of input image')
 
 parser.add_argument('--batch_size', type=int, default=100)
-parser.add_argument('--nThreads', '-j', default=16, type=int, metavar='N',
+parser.add_argument('--nThreads', '-j', default=4, type=int, metavar='N',
                     help='number of data loading threads (default: 2)')
 parser.add_argument('--pool_feature', type=ast.literal_eval, default=False, required=False,
                     help='if True extract feature from the last pool layer')

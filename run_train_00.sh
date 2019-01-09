@@ -56,7 +56,7 @@ echo "Begin Testing!"
 # POOL_FEATURE=True # if False, just comment this line !
 echo ${POOL_FEATURE}
 
-Model_LIST="1 20 40"
+Model_LIST="1 20 400"
 for i in $Model_LIST ;do
     CUDA_VISIBLE_DEVICES=0 python test.py --net ${NET} \
     --data $DATA \
