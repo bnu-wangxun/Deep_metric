@@ -38,7 +38,7 @@ def main(args):
     display(args)
     start = 0
 
-    model = models.create(args.net, pretrained=False, dim=args.dim)
+    model = models.create(args.net, pretrained=True, dim=args.dim)
 
     # for vgg and densenet
     if args.resume is None:
@@ -155,7 +155,7 @@ if __name__ == '__main__':
                         help='loss for training network')
     parser.add_argument('--epochs', default=600, type=int, metavar='N',
                         help='epochs for training process')
-    parser.add_argument('--save_step', default=50, type=int, metavar='N',
+    parser.add_argument('--save_step', default=20, type=int, metavar='N',
                         help='number of epochs to save model')
 
     # Resume from checkpoint
@@ -171,7 +171,7 @@ if __name__ == '__main__':
     #                     help='where the trained models save')
     parser.add_argument('--save_dir', default=None,
                         help='where the trained models save')
-    parser.add_argument('--nThreads', '-j', default=16, type=int, metavar='N',
+    parser.add_argument('--nThreads', '-j', default=0, type=int, metavar='N',
                         help='number of data loading threads (default: 2)')
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--weight-decay', type=float, default=2e-4)

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 DATA=cub
-DATA_ROOT=/home/siit_x99_2/navi/data/input_data
+DATA_ROOT=/navi/data/input_data
 Gallery_eq_Query=True
-LOSS=WeightLoss
-CHECKPOINTS=/home/siit_x99_2/navi/cswork/siit/dml/checkpoint
+LOSS=Weight
+CHECKPOINTS=/navi/cswork/siit/dml/checkpoint
 R=.pth.tar
 
 if_exist_mkdir ()
@@ -44,10 +44,10 @@ CUDA_VISIBLE_DEVICES=0 python train.py --net ${NET} \
 --alpha $ALPHA \
 --num_instances   5 \
 --batch_size ${BatchSize} \
---epoch 400 \
+--epoch 40 \
 --loss $LOSS \
 --save_dir ${SAVE_DIR} \
---save_step 50 \
+--save_step 20 \
 --ratio ${RATIO} 
 fi
 
@@ -56,8 +56,8 @@ echo "Begin Testing!"
 # POOL_FEATURE=True # if False, just comment this line !
 echo ${POOL_FEATURE}
 
-Model_LIST=`seq  50 50 400`
-for i in $Model_LIST; do
+Model_LIST="1 20 40"
+for i in $Model_LIST ;do
     CUDA_VISIBLE_DEVICES=0 python test.py --net ${NET} \
     --data $DATA \
     --data_root ${DATA_ROOT} \
@@ -67,7 +67,6 @@ for i in $Model_LIST; do
     -r ${SAVE_DIR}/ckp_ep$i$R \
     --pool_feature ${POOL_FEATURE:-'False'} \
     | tee -a result/$LOSS/$DATA/${NET}-DIM-$DIM-Batchsize-${BatchSize}-ratio-${RATIO}-lr-$LR${POOL_FEATURE:+'-pool_feature'}.txt
-
 done
 fi
 
