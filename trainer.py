@@ -45,7 +45,7 @@ def train(epoch, model, criterion, optimizer, train_loader, args):
         batch_time.update(time.time() - end)
         end = time.time()
 
-        losses.update(loss.data[0])
+        losses.update(loss.data)
         accuracy.update(inter_)
         pos_sims.update(dist_ap)
         neg_sims.update(dist_an)

@@ -4,7 +4,7 @@ import torch
 from torch import nn
 from torch.autograd import Variable
 import numpy as np
-
+import pdb
 
 def similarity(inputs_):
     # Compute similarity mat of deep feature
@@ -68,9 +68,7 @@ class WeightLoss(nn.Module):
 
                 pos_loss = 2.0/self.beta * torch.log(1 + torch.sum(torch.exp(-self.beta * (pos_pair - base))))
                 neg_loss = 2.0/self.alpha * torch.log(1 + torch.sum(torch.exp(self.alpha * (neg_pair - base))))
-                loss_ = pos_loss + neg_loss
-                loss_.unsqueeze_(-1)
-                loss.append(loss_)
+                loss.append(pos_loss + neg_loss)
 
             else:
                 # print('hello world')
@@ -79,14 +77,16 @@ class WeightLoss(nn.Module):
                 pos_loss = 2.0/self.beta * torch.log(1 + torch.sum(torch.exp(-self.beta * (pos_pair - base))))
                 neg_loss = 2.0/self.alpha * torch.log(1 + torch.sum(torch.exp(self.alpha * (neg_pair - base))))
 
-                loss_ = pos_loss + neg_loss
-                loss_.unsqueeze_(-1)
-                loss.append(loss_)
+                loss.append(pos_loss + neg_loss)
 
+        
+        for i in range(len(loss)):
+            loss[i] = torch.unsqueeze(loss[i], dim = -1)
         loss = torch.sum(torch.cat(loss))/n
         prec = float(c)/n
-        neg_d = torch.mean(neg_sim).data[0]
-        pos_d = torch.mean(pos_sim).data[0]
+        # pdb.set_trace()
+        neg_d = torch.mean(neg_sim).data
+        pos_d = torch.mean(pos_sim).data
 
         return loss, prec, pos_d, neg_d
 
