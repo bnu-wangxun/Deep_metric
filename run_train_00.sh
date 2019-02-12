@@ -56,12 +56,12 @@ echo "Begin Testing!"
 # POOL_FEATURE=True # if False, just comment this line !
 echo ${POOL_FEATURE}
 
-Model_LIST="1 20 40"
+Model_LIST="1 20 400"
 for i in $Model_LIST ;do
-    CUDA_VISIBLE_DEVICES=0 python3 test.py --net ${NET} \
+    CUDA_VISIBLE_DEVICES=3 python3 test.py --net ${NET} \
     --data $DATA \
     --data_root ${DATA_ROOT} \
-    --batch_size 100 \
+    --batch_size 8 \
     -g_eq_q ${Gallery_eq_Query} \
     --width 224 \
     -r ${SAVE_DIR}/ckp_ep$i$R \

@@ -39,6 +39,7 @@ class WeightLoss(nn.Module):
         pos_sim = torch.masked_select(sim_mat, pos_mask)
         neg_sim = torch.masked_select(sim_mat, neg_mask)
 
+        # 
         num_instances = len(pos_sim)//n + 1
         num_neg_instances = n - num_instances
 

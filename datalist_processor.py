@@ -1,5 +1,5 @@
 """
-python -i 002_label_processor.py \
+python -i datalist_processor.py \
 --data_path=/home/siit/navi/data/input_data/CUB_200_2011/images \
 --save_path=/home/siit/navi/data/input_data/CUB_200_2011/ \
 --path_label False
@@ -63,24 +63,3 @@ for line in glob.glob(config.data_path + '/1*/*'):
     f.write('{} {}\n'.format(line, label_index))
     
 f.close()
-"""
-counter = 0
-for line in path_list:
-    one_hot_label = np.eye(len(label_list))[label_list.index(
-        os.path.basename(line).split('_')[1].split('.')[0])]
-    # one_hot_label = np.eye(len(label_list))[label_list.index(line.split('/')[-2])]
-    one_hot_label = np.uint8(one_hot_label)
-    path_label_dict[line] = one_hot_label
-    counter += 1
-
-np.save(os.path.join(config.save_path, 'path_label_dict.npy'), path_label_dict)
-"""
-
-"""
-for itr in range(config.iter):
-    # save the file inside of the meta/ folder
-    f = open(os.path.join(save_path, 'path_label_list{0:03d}.txt'.format(itr)), 'w')
-    for line in path_list[int((itr)*lenth/config.iter):int((itr+1)*lenth/config.iter)]:
-        f.write(line + '\n')
-    f.close()
-"""

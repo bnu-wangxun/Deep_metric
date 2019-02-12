@@ -119,7 +119,7 @@ class CUB_200_2011:
 
 
         train_txt = os.path.join(root, 'train.txt')
-        test_txt = os.path.join(root, 'test.txt')
+        test_txt = os.path.join(root, 'train.txt')
 
         self.train = MyData(root, label_txt=train_txt, transform=transform_Dict['rand-crop'])
         self.gallery = MyData(root, label_txt=test_txt, transform=transform_Dict['center-crop'])
