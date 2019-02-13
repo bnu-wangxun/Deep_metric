@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import torch
 from torch import nn
 from torch.autograd import Variable
+import pdb
 # import numpy as np
 
 
@@ -78,10 +79,11 @@ class DistWeightedLoss(nn.Module):
             neg_loss = 2.0/self.alpha * torch.log(1 + torch.sum(torch.exp(self.alpha * (neg_pair - base))))
             loss.append(pos_loss + neg_loss)
 
-        loss = torch.sum(torch.cat(loss))/n
+        loss = sum(loss)/n
         prec = float(c)/n
-        neg_d = torch.mean(neg_sim).data[0]
-        pos_d = torch.mean(pos_sim).data[0]
+        pdb.set_trace()
+        neg_d = torch.mean(neg_sim).item()
+        pos_d = torch.mean(pos_sim).item()
 
         return loss, prec, pos_d, neg_d
 

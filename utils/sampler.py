@@ -3,6 +3,7 @@ from collections import defaultdict
 
 import numpy as np
 import torch
+import pdb
 from torch.utils.data.sampler import (
     Sampler, SequentialSampler, RandomSampler, SubsetRandomSampler,
     WeightedRandomSampler)
@@ -67,6 +68,7 @@ class FastRandomIdentitySampler(Sampler):
             else:
                 t = np.random.choice(t, size=self.num_instances, replace=True)
             ret.extend(t)
+            # pdb.set_trace()
         # print('Done data sampling')
         return iter(ret)
 

@@ -2,7 +2,7 @@
 DATA=cub
 DATA_ROOT=/home/siit/navi/data/input_data
 Gallery_eq_Query=True
-LOSS=Weight
+LOSS=Margin
 CHECKPOINTS=/home/siit/navi/cswork/siit/dml/checkpoint
 R=.pth.tar
 
@@ -35,7 +35,7 @@ if_exist_mkdir ${SAVE_DIR}
 
 if [ ! -n "$1" ] ;then
 echo "Begin Training!"
-CUDA_VISIBLE_DEVICES=0 python3 train.py --net ${NET} \
+CUDA_VISIBLE_DEVICES=1 python3 train.py --net ${NET} \
 --data $DATA \
 --data_root ${DATA_ROOT} \
 --init random \
@@ -56,7 +56,7 @@ echo "Begin Testing!"
 # POOL_FEATURE=True # if False, just comment this line !
 echo ${POOL_FEATURE}
 
-Model_LIST="1 20 400"
+Model_LIST="1 20 40"
 for i in $Model_LIST ;do
     CUDA_VISIBLE_DEVICES=3 python3 test.py --net ${NET} \
     --data $DATA \

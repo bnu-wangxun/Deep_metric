@@ -81,13 +81,13 @@ class WeightLoss(nn.Module):
                 loss.append(pos_loss + neg_loss)
 
         
-        for i in range(len(loss)):
-            loss[i] = torch.unsqueeze(loss[i], dim = -1)
-        loss = torch.sum(torch.cat(loss))/n
+        # for i in range(len(loss)):
+        #     loss[i] = torch.unsqueeze(loss[i], dim = -1)
+        loss = sum(loss)/n
         prec = float(c)/n
         # pdb.set_trace()
-        neg_d = torch.mean(neg_sim).data
-        pos_d = torch.mean(pos_sim).data
+        neg_d = torch.mean(neg_sim).item()
+        pos_d = torch.mean(pos_sim).item()
 
         return loss, prec, pos_d, neg_d
 
