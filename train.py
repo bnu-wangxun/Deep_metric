@@ -79,8 +79,9 @@ def main(args):
 
     optimizer = torch.optim.Adam(param_groups, lr=args.lr,
                                  weight_decay=args.weight_decay)
-
-    criterion = losses.create(args.loss, margin=args.margin, alpha=args.alpha, base=args.loss_base).cuda()
+                                 
+    print('weight loss: {}'.format(args.weight_loss))
+    criterion = losses.create(args.loss, margin=args.margin, alpha=args.alpha, base=args.loss_base, weight_loss=args.weight_loss).cuda()
 
     # Decor_loss = losses.create('decor').cuda()
     data = DataSet.create(args.data, ratio=args.ratio, width=args.width, origin_width=args.origin_width, root=args.data_root)
@@ -139,6 +140,8 @@ if __name__ == '__main__':
                         help='number of neighbour points in KNN')
     parser.add_argument('--margin', default=0.5, type=float,
                         help='margin in loss function')
+    parser.add_argument('--weight_loss', default=False, type=bool,
+                        help='weight loss function')
     parser.add_argument('--init', default='random',
                         help='the initialization way of FC layer')
 

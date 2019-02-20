@@ -29,7 +29,7 @@ LR=1e-5
 BatchSize=80
 RATIO=0.16
 
-SAVE_DIR=${CHECKPOINTS}/${LOSS}/${DATA}/${NET}-DIM-${DIM}-lr${LR}-ratio-${RATIO}-BatchSize-${BatchSize}
+SAVE_DIR=${CHECKPOINTS}/${LOSS}/${DATA}/${NET}-DIM-${DIM}-lr${LR}-ratio-${RATIO}-BatchSize-${BatchSize}-Margin
 if_exist_mkdir ${SAVE_DIR}
 
 
@@ -48,6 +48,7 @@ CUDA_VISIBLE_DEVICES=1 python3 train.py --net ${NET} \
 --loss $LOSS \
 --save_dir ${SAVE_DIR} \
 --save_step 20 \
+--weight_loss=False \
 --ratio ${RATIO} 
 fi
 

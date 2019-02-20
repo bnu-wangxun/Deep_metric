@@ -27,11 +27,13 @@ def GaussDistribution(data):
 
 
 class DistWeightedLoss(nn.Module):
-    def __init__(self, alpha=50, beta=2, margin=0, **kwargs):
+    def __init__(self, alpha=50, beta=2, margin=0, weight_loss=True, **kwargs):
         super(DistWeightedLoss, self).__init__()
         self.margin = margin
         self.alpha = alpha
         self.beta = beta
+        self.weight_loss = weight_loss
+        
         # self.ranking_loss = nn.MarginRankingLoss(margin=self.margin)
 
     def forward(self, inputs, targets):
@@ -61,6 +63,8 @@ class DistWeightedLoss(nn.Module):
         loss = list()
         c = 0
         base = 0.5
+        mar_al = 0.1
+        mar_be = 0.5
         for i, pos_pair in enumerate(pos_sim):
             # print(i)
             # pos_pair_ = torch.sort(pos_pair_)[0]
@@ -74,9 +78,12 @@ class DistWeightedLoss(nn.Module):
             # print(neg_index)
             # import pdb; pdb.set_trace()
             
-            
-            pos_loss = 2.0/self.beta * torch.log(1 + torch.sum(torch.exp(-self.beta * (pos_pair - base))))
-            neg_loss = 2.0/self.alpha * torch.log(1 + torch.sum(torch.exp(self.alpha * (neg_pair - base))))
+            if self.weight_loss:
+                pos_loss = 2.0/self.beta * torch.log(1 + torch.sum(torch.exp(-self.beta * (pos_pair - base))))
+                neg_loss = 2.0/self.alpha * torch.log(1 + torch.sum(torch.exp(self.alpha * (neg_pair - base))))
+            else: 
+                pos_loss = self.beta * torch.mean(torch.relu(- pos_pair + mar_be + mar_al))
+                neg_loss = self.alpha * torch.mean(torch.relu(pos_pair - mar_be + mar_al))
             loss.append(pos_loss + neg_loss)
 
         loss = sum(loss)/n
