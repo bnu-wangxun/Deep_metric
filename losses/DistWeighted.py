@@ -81,7 +81,7 @@ class DistWeightedLoss(nn.Module):
 
         loss = sum(loss)/n
         prec = float(c)/n
-        pdb.set_trace()
+        # pdb.set_trace()
         neg_d = torch.mean(neg_sim).item()
         pos_d = torch.mean(pos_sim).item()
 

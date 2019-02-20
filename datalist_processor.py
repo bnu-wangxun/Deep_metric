@@ -9,6 +9,7 @@ import os
 import argparse
 import numpy as np
 import glob
+import torch
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--data_path', type=str, dest='data_path', default='/home/siit/navi/data/input_data/mnist_png/')
@@ -63,3 +64,23 @@ for line in glob.glob(config.data_path + '/1*/*'):
     f.write('{} {}\n'.format(line, label_index))
     
 f.close()
+
+tra_dict = {}
+temp_lst = [] 
+for i in range(100):
+    for line in glob.glob(config.data_path + '/0{:02d}*/*'.format(i)):
+        temp_lst.append(line)
+    tra_dict['class_tra_{:02d}'.format(i)] = temp_lst
+    temp_lst = []
+
+torch.save(tra_dict, 'data_dict_tra.pth')
+
+tra_dict = {}
+temp_lst = [] 
+for i in range(100):
+    for line in glob.glob(config.data_path + '/1{:02d}*/*'.format(i)):
+        temp_lst.append(line)
+    tra_dict['class_test_{:02d}'.format(i)] = temp_lst
+    temp_lst = []
+
+torch.save(tra_dict, 'data_dict_test.pth')
